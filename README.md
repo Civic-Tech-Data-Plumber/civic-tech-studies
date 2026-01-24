@@ -1,4 +1,4 @@
-# civiltech-studies
+# civic-tech-studies
 
 A learning journal documenting my path toward data engineering in civil technology, with a focus on transparency, ethics, and justice-oriented data systems.
 
