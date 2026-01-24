@@ -32,7 +32,3 @@ Expect rough edges and frequent iteration.
 ## Feedback and Contributions
 
 This project is primarily for learning, but thoughtful feedback, corrections, and guidance are welcome.
-
-## Contact
-
-You can reach me at: 1kc.finex@gmail.com
