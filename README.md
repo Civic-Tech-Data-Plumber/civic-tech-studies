@@ -1,8 +1,38 @@
 # civiltech-studies
-Brief Description: A blog showcasing my studies to become a data engineer in civil tech.
-Full Description: This blog is designed to showcase what I am learning to become a responsible civil tech. 
-My goal is to create high fidelity data dashboards to allow users to quickly view aggregated data of USA's court proceedings.
-In a world where law and justice needs to be fair, many feel as though it isn't. I'm hoping that the data I produce can help alleviate those fears or justify them. 
-Utilizing LLMs (AI) to help aggregate data, I aim to ensure all data is factual, unaltered, and of the highest quality.
 
-This is a new project, and I am a noob. I accept any help offered. My email is 1kc.finex@gmail.com
+A learning journal documenting my path toward data engineering in civil technology, with a focus on transparency, ethics, and justice-oriented data systems.
+
+## About This Project
+
+This repository serves as a public learning log as I study SQL, data engineering concepts, and data practices relevant to civil technology. The long-term aim is to build high-fidelity data dashboards that allow users to explore aggregated data from U.S. court proceedings.
+
+In a system where fairness and justice are often questioned, I believe responsible data work can help clarify where trust is warranted—and where it is not.
+
+## Goals
+
+- Learn and document SQL and data engineering fundamentals
+- Explore ethical data aggregation in the context of public legal data
+- Experiment (carefully) with LLM-assisted workflows for summarization and analysis, while preserving factual accuracy and data integrity
+
+## Current Status
+
+This is an early-stage project. Most content currently consists of:
+- Markdown notes and blog-style entries
+- SQL learning exercises
+- Exploratory research and design thinking
+
+Expect rough edges and frequent iteration.
+
+## Values and Constraints
+
+- Data should remain factual and unaltered
+- Sources should be attributable and auditable
+- Automation should support understanding, not obscure truth
+
+## Feedback and Contributions
+
+This project is primarily for learning, but thoughtful feedback, corrections, and guidance are welcome.
+
+## Contact
+
+You can reach me at: 1kc.finex@gmail.com
