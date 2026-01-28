@@ -387,7 +387,7 @@ WHERE jurisdiction = 'CA'
      OR summary LIKE '%detention%'
   )
 ```
-
+ 
 ### Translation:
 
 > “Only CA cases, and within those, keep ones that mention ICE or detention.”
