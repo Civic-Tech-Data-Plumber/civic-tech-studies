@@ -1,5 +1,6 @@
-> Learning log - Day 3  
+> Learning log - Day 7   
 > Today weLearned how INNER JOIN combines related tables using shared keys. Observed how unmatched rows are excluded, which has important implications when analyzing incomplete or underreported civic data.
+> We will also cover `NULL` and `ON` more in depth.
 
 ---
 
