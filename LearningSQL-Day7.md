@@ -373,3 +373,507 @@ Intro texts often delay aliases to:
 But **once JOINS appear**, aliases are no longer optional.
 
 You’re encountering them at exactly the right time.
+
+---
+
+## What `ON` does (exactly)
+
+The `ON` clause defines **how rows from two tables are matched** during a `JOIN`.
+
+At its simplest:
+
+> **`ON` specifies the condition that relates one table’s rows to another table’s rows.**
+
+Most commonly, that relationship is **equality between key columns**.
+
+---
+
+## The canonical example
+
+```sql
+FROM employees e
+INNER JOIN facilities f
+ON e.facility_id = f.facility_id
+```
+
+This reads as:
+
+> “Join each employee row to the facility row **where the facility IDs match**.”
+
+That’s the most common pattern you’ll see in the real world.
+
+---
+
+## Why this is usually IDs
+
+Relational databases are designed around **keys**:
+
+* **Primary key**: uniquely identifies a row
+* **Foreign key**: references another table’s primary key
+
+Example:
+
+| Table        | Column        | Role        |
+| ------------ | ------------- | ----------- |
+| `facilities` | `facility_id` | Primary key |
+| `employees`  | `facility_id` | Foreign key |
+
+So this join:
+
+```sql
+ON e.facility_id = f.facility_id
+```
+
+is saying:
+
+> “Link employees to the facility they belong to.”
+
+---
+
+## Important clarification: `ON` is not just `WHERE`
+
+Although it *looks* similar, `ON` and `WHERE` are **not interchangeable**.
+
+### `ON`
+
+* Defines **row matching between tables**
+* Applied **during the join operation**
+* Determines which rows are paired together
+
+### `WHERE`
+
+* Filters the **final result set**
+* Applied **after joins are performed**
+
+This distinction matters a lot once you get to `LEFT JOIN` (you will).
+
+---
+
+## Example showing the difference
+
+```sql
+FROM detentions d
+LEFT JOIN facilities f
+ON d.facility_id = f.facility_id
+WHERE f.state = 'CA';
+```
+
+This:
+
+* Joins detentions to facilities
+* Then removes rows where no CA facility exists
+
+Move the condition into `ON`:
+
+```sql
+FROM detentions d
+LEFT JOIN facilities f
+ON d.facility_id = f.facility_id
+AND f.state = 'CA';
+```
+
+Now:
+
+* All detentions remain
+* Facility data only appears if the facility is in CA
+
+Same tables. Very different results.
+
+---
+
+## `ON` can be more than equality
+
+Although equality joins are most common, `ON` supports **any condition**:
+
+```sql
+ON o.order_date BETWEEN p.start_date AND p.end_date
+```
+
+```sql
+ON LOWER(a.name) = LOWER(b.name)
+```
+
+```sql
+ON e.salary > g.minimum_salary
+```
+
+But for **civic-tech datasets**, expect mostly:
+
+* ID-based joins
+* date-based joins
+* jurisdiction-based joins
+
+---
+
+## Mental model (use this)
+
+> **`ON` answers: “Which rows from table A should be paired with which rows from table B?”**
+> **`WHERE` answers: “Which of those paired rows do I keep?”**
+
+If you internalize that distinction now, you’ll avoid one of the most common SQL failure modes later.
+
+---
+
+# The core difference of how ON and WHERE are used
+
+> **`ON` controls how rows are matched.  
+> `WHERE` controls which matched rows survive.**
+
+The confusion comes from the fact that SQL *reads* top-to-bottom but *executes* in a different order.
+
+---
+
+# SQL’s actual execution order (simplified)
+
+When you write:
+
+```sql
+SELECT ...
+FROM A
+LEFT JOIN B
+  ON condition
+WHERE filter;
+```
+
+SQL does this internally:
+
+1. **FROM** table A
+2. **JOIN** table B using the `ON` condition
+   → rows are matched (or padded with NULLs)
+3. **WHERE** filters the result
+   → rows are kept or discarded
+4. **SELECT** columns
+
+That timing difference is everything.
+
+---
+
+# Let’s use a concrete civic-tech example
+
+### Tables
+
+**detentions**
+
+| detention_id | facility_id |
+| ------------ | ----------- |
+| 1            | 10          |
+| 2            | 20          |
+| 3            | 30          |
+
+**facilities**
+
+| facility_id | state |
+| ----------- | ----- |
+| 10          | CA    |
+| 20          | TX    |
+
+Note:
+
+* Facility `30` **does not exist**
+* Detention `3` still exists
+
+---
+
+# Case 1 — condition in `ON` (safe)
+
+```sql
+SELECT d.detention_id, f.state
+FROM detentions d
+LEFT JOIN facilities f
+  ON d.facility_id = f.facility_id
+ AND f.state = 'CA';
+```
+
+### Step-by-step
+
+**JOIN step (`ON`)**
+
+| detention_id | state |
+| ------------ | ----- |
+| 1            | CA    |
+| 2            | NULL  |
+| 3            | NULL  |
+
+Why?
+
+* Detention 1 → matches CA facility
+* Detention 2 → facility exists but not CA → no match → NULL
+* Detention 3 → no facility → NULL
+
+**No WHERE filter**, so all rows survive.
+
+✅ **All detentions preserved**
+
+---
+
+# Case 2 — condition in `WHERE` (danger)
+
+```sql
+SELECT d.detention_id, f.state
+FROM detentions d
+LEFT JOIN facilities f
+  ON d.facility_id = f.facility_id
+WHERE f.state = 'CA';
+```
+
+### Step-by-step
+
+**JOIN step (`ON`)**
+
+| detention_id | state |
+| ------------ | ----- |
+| 1            | CA    |
+| 2            | TX    |
+| 3            | NULL  |
+
+**WHERE filter**
+
+```sql
+WHERE f.state = 'CA'
+```
+
+* Row 1 → CA → kept
+* Row 2 → TX → removed
+* Row 3 → NULL → removed (NULL ≠ 'CA')
+
+### Final result
+
+| detention_id | state |
+| ------------ | ----- |
+| 1            | CA    |
+
+❌ **Detentions lost**
+
+---
+
+# The invisible trap
+
+This is the key insight:
+
+> **`WHERE` filters out NULLs created by a `LEFT JOIN`.**
+
+So the moment you reference the joined table in `WHERE`, you often turn:
+
+```sql
+LEFT JOIN
+```
+
+into:
+
+```sql
+INNER JOIN
+```
+
+without realizing it.
+
+---
+
+# Why this doesn’t matter for INNER JOIN
+
+With `INNER JOIN`, unmatched rows are already discarded.
+
+So:
+
+```sql
+INNER JOIN ... ON condition
+WHERE other_condition
+```
+
+vs
+
+```sql
+INNER JOIN ... ON condition AND other_condition
+```
+
+Often produce the same result.
+
+That’s why this confusion survives so long — it only bites you once `LEFT JOIN` enters the picture.
+
+---
+
+# Mental model that finally sticks
+
+### Think in phases:
+
+#### `ON`
+
+> “Which rows are allowed to **shake hands**?”
+
+#### `LEFT JOIN`
+
+> “If no handshake happens, keep the left row anyway and pad with NULLs.”
+
+#### `WHERE`
+
+> “Now throw away any rows that don’t meet my final criteria.”
+
+---
+
+# Rule you can safely write in your learning log
+
+> **Put relationship logic in `ON`.
+> Put filtering logic in `WHERE`.
+> If using `LEFT JOIN`, be extremely careful referencing the joined table in `WHERE`.**
+
+---
+
+# One-liner summary
+
+> `ON` affects **matching**.
+> `WHERE` affects **survival**.
+
+--
+
+# Understanding `NULL`
+
+> This is where **technical correctness meets human communication**, and the answer depends on *who* the results are for and *where* they are shown.
+
+---
+
+## 🧠 The industry rule of thumb
+
+> **Keep `NULL` in the database.
+> Translate `NULL` at the presentation layer.**
+
+That separation is considered best practice in data engineering, analytics, and civic-tech.
+
+---
+
+## Why `NULL` should stay `NULL` (in data storage)
+
+`NULL` is not a value — it is **the absence of a value**.
+
+Replacing it with strings like `"N/A"` or `"Unknown"` inside the database causes real problems:
+
+### ❌ Problems with replacing NULL in tables
+
+* Breaks numeric calculations (`AVG`, `SUM`, `COUNT`)
+* Requires special-case logic everywhere
+* Loses semantic meaning (unknown vs not applicable vs missing)
+* Makes joins and filters less reliable
+* Pollutes datasets irreversibly
+
+Example:
+
+```sql
+AVG(outcome_length)
+```
+
+Works with NULLs
+❌ Fails if `"N/A"` is stored instead
+
+So in **storage, raw query outputs, and analysis pipelines**:
+✅ **NULL stays NULL**
+
+---
+
+## Where human-friendly labels belong
+
+### 1️⃣ Reports, dashboards, and exports
+
+This is where translation happens.
+
+Example:
+
+```sql
+SELECT
+  case_id,
+  COALESCE(outcome, 'Unknown') AS outcome
+FROM cases;
+```
+
+Or:
+
+```sql
+CASE
+  WHEN outcome IS NULL THEN 'Not recorded'
+  ELSE outcome
+END AS outcome
+```
+
+The underlying data remains intact.
+Only the **display** changes.
+
+---
+
+## 📌 Common human-friendly mappings (by intent)
+
+This is subtle but important.
+
+| Display Label         | When to use it                         |
+| --------------------- | -------------------------------------- |
+| `Unknown`             | Value should exist but wasn’t recorded |
+| `Not Available (N/A)` | Data doesn’t apply in this context     |
+| `Pending`             | Value expected in the future           |
+| `Not Disclosed`       | Value intentionally withheld           |
+| `Missing`             | Data loss or ingestion failure         |
+
+**Civic-tech note:**
+Using the *wrong* label can accidentally mislead.
+
+---
+
+## Civic-tech example (why this matters)
+
+Imagine a report on detention outcomes:
+
+| Outcome  |
+| -------- |
+| Released |
+| Removed  |
+| Unknown  |
+
+If `Unknown` really means:
+
+* no reporting requirement
+* sealed case
+* system error
+
+…those are **very different realities**.
+
+So in civic-tech:
+
+* Store NULL
+* Document what NULL means
+* Translate carefully depending on audience
+
+---
+
+## 📌 Where people *do* keep literal `NULL`
+
+| Context                    | Keep `NULL`? |
+| -------------------------- | ------------ |
+| Raw SQL query results      | ✅ Yes        |
+| ETL pipelines              | ✅ Yes        |
+| Analytics notebooks        | ✅ Yes        |
+| API responses (JSON)       | Often `null` |
+| Internal engineering tools | ✅ Yes        |
+
+---
+
+## 📌 Where people almost never show `NULL`
+
+| Context                  | Replace it? |
+| ------------------------ | ----------- |
+| Public dashboards        | ✅ Yes       |
+| CSVs for journalists     | Usually     |
+| Reports for policymakers | Yes         |
+| UI tables                | Yes         |
+
+---
+
+## The safe pattern you can write in your journal
+
+> **NULL is a data-state, not a user interface choice.**
+> Preserve it in storage; interpret it at the edge.
+
+---
+
+## Bonus tips: the SQL tools you’ll see everywhere
+
+| Tool             | Purpose              |
+| ---------------- | -------------------- |
+| `COALESCE(a, b)` | First non-null value |
+| `CASE WHEN`      | Conditional labeling |
+| `IS NULL`        | Precise filtering    |
+| `IS NOT NULL`    | Completeness checks  |
