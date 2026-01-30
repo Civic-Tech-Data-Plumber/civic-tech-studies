@@ -22,6 +22,8 @@
   - [`For` and `In`](#for-and-in "For each one of these in all of this category/column...")
 - [Closing the database connection](#connclose "Terminating the connection created by `connect_db()`")
 
+> ❗ links are broken. Need to comeback and edit this page. Check others 🤯
+
 # Example Python Script
 We will use the following script to highlight key components and define their use to help the budding data engineer understand the core concepts of the scripting language.
 
@@ -380,7 +382,7 @@ for variable in iterable:
 
 ## `conn.close()` 
 
-**closes the database connection that was created earlier by `connect_db()`** and then *passed into* `fetch_ice_violence_cases(conn)`.
+**Closes the database connection that was created earlier by `connect_db()`** and then *passed into* `fetch_ice_violence_cases(conn)`.
 > 📝 `conn.close()` closes the database connection that was originally opened by `connect_db()`, signaling that no more queries will be run and freeing system resources.
 
 ### Mental model (very useful)
