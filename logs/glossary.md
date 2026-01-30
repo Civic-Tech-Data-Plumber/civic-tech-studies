@@ -19,3 +19,21 @@
 * **Iterable** - The collection of items you want to loop through.  
 * **Iteration** -The repetition of a process or utterance***
 * **Variable** - A loop variable that takes on the value of the current item in the `iterable` during each iteration.
+
+---
+
+## Key Terms
+
+In SQL, `SELECT` is officially called a **keyword**. Sometimes people also refer to it as a **clause** (especially when talking about the part of a query that starts with `SELECT` and defines what columns or expressions to return).
+
+| Term          | Example                                   | What it means                                                                                   |
+| ------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Keyword**   | `SELECT`, `FROM`, `WHERE`                 | Reserved words in SQL that have a special meaning. They tell the database what to do.           |
+| **Clause**    | `SELECT column1, column2 FROM table_name` | A part of a SQL statement. A clause often starts with a keyword like `SELECT`, `FROM`, `WHERE`. |
+| **Statement** | `SELECT * FROM movies WHERE rating > 8;`  | A complete instruction to the database. A statement can contain multiple clauses.               |
+
+✅ So in short:
+
+* `SELECT` → **keyword**
+* The part `SELECT column1, column2` → **SELECT clause**
+* The whole query with `SELECT ... FROM ... WHERE ...` → **SQL statement**
