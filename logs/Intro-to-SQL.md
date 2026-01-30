@@ -12,7 +12,7 @@
 - [Order of Operations](#order-of-operations "Logical order of operations performed by SQL databases")
   - [Visual Analogy](#visual-analogy "Easy way to think of SQL's order of operations")
   - [Quick Guide Table](#quick-guide-table "Table provided for quick reference for the order of operations")
-
+- [Example](#example "An example SQL script written in Python")
 ---
 
 ## Glossary 
@@ -30,7 +30,7 @@
 ## What is SQL 
 
 SQL means Structured Query Language. 
-It is a standardized language with a defined syntax used to command databases and retrieve specific datasets. 
+It is a standardized language with a defined syntax used to command databases and retrieve specific datasets.   
 Some popular SQL databases include:
 
 - SQLite
@@ -38,7 +38,8 @@ Some popular SQL databases include:
 - Postgres
 - Oracle
 - and Microsoft SQL Server
-All of them support the common SQL language syntax.
+   
+*All of them support the common SQL language syntax.*
 
 ## What Are Queries 
 
@@ -50,7 +51,7 @@ So, when starting out it is important to know that there is a specific set of sy
 For example:
 
 ```sql
-SELECT column, another_column, column3
+SELECT column1, column2, column3
 FROM mytable
 WHERE condition;
 ```
@@ -86,16 +87,17 @@ The logical execution order of SQL is:
   **Picking Apples from a Basket**
 
   1. `FROM table_name` → Pick your basket of apples
-  2. `WHERE` condition → Only pick the red apples
-  3. `GROUP` BY column → Group apples by size
-  4. `HAVING` condition → Only keep groups with more than 3 apples
-  5. `SELECT` column → Note apple details (color, size, weight)
-  6. `ORDER` BY column → Arrange apples by size
+  2. `JOIN` other_table → Pour in apples from another basket that match certain rules
+  3. `WHERE` condition → Only pick the red apples
+  4. `GROUP` BY column → Group apples by size
+  5. `HAVING` condition → Only keep groups with more than 3 apples
+  6. `SELECT` column → Note apple details (color, size, weight)
+  7. `ORDER` BY column → Arrange apples by size
 
 **Important Note:** `SELECT` is last logically, even though it’s written first.
 
 ### Quick Guide Table 
-
+⬅️
 | Step | Clause   | What Happens                                     |
 | ---- | -------- | ------------------------------------------------ |
 | 1    | `FROM`     | Identify which table(s) to use                   |
@@ -105,3 +107,88 @@ The logical execution order of SQL is:
 | 5    | `HAVING`   | Filter groups after aggregation                  |
 | 6    | `SELECT`   | Choose which columns (or calculations) to return |
 | 7    | `ORDER BY` | Sort the final results                           |
+
+📌 **QUICK TIP**
+> JOIN decides what data exists; WHERE decides what data survives.
+
+### Conceptual Flow
+
+It's helpful to think of data scripts (often written in Python) like this:
+
+**IMPORT** tools  
+**DEFINE** reusable functions  
+**CONNECT** to data  
+**QUERY** data  
+**LOOP** through results  
+**RETURN** or **SAVE** output  
+**CLOSE** resources   
+
+## Example 
+
+*Our example script for the day:*
+> This example shows how SQL queries are commonly embedded inside a Python script to retrieve and analyze data from a database.
+
+```python
+"""
+ice_violence_queries.py
+
+Helper functions for querying CourtListener-style data
+related to ICE violence in Los Angeles, CA.
+
+Date range: January 2025 – July 2025
+"""
+
+import sqlite3
+
+
+def connect_db(db_path="courtlistener.db"):
+    """
+    Connect to the SQLite database.
+
+    Returns:
+        sqlite3.Connection
+    """
+    return sqlite3.connect(db_path)
+
+
+def fetch_ice_violence_cases(conn):
+    """
+    Fetch court cases from Los Angeles, CA that reference ICE-related violence
+    between January and July 2025.
+
+    Returns:
+        list of tuples
+    """
+    query = """
+    SELECT
+        case_id,
+        case_name,
+        court_name,
+        jurisdiction,
+        date_filed,
+        outcome,
+        summary
+    FROM court_cases
+    WHERE jurisdiction = 'Los Angeles, CA'
+      AND date_filed BETWEEN '2025-01-01' AND '2025-07-31'
+      AND (
+            summary LIKE '%ICE%'
+         OR summary LIKE '%Immigration and Customs Enforcement%'
+         OR summary LIKE '%detention%'
+         OR summary LIKE '%use of force%'
+      );
+    """
+
+    cursor = conn.cursor()
+    cursor.execute(query)
+    return cursor.fetchall()
+
+
+if __name__ == "__main__":
+    conn = connect_db()
+    cases = fetch_ice_violence_cases(conn)
+    for case in cases:
+        print(case)
+
+    conn.close()
+```
