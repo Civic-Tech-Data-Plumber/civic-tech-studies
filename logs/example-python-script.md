@@ -20,7 +20,7 @@
 -[Decision Making](#decision-making "Useful for: Filtering, Validation and Conditional logic.") 
   - [`If`, `elif`, `else`](#if-elif-else "Useful for: Filtering, Validation and Conditional logic.")
   - [`For` and `In`](#for-and-in "For each one of these in all of this category/column...")
-- [Closing the database connection](#conn-close "Terminating the connection created by `connect_db()`")
+- [Closing the database connection](#connclose "Terminating the connection created by `connect_db()`")
 
 # Example Python Script
 We will use the following script to highlight key components and define their use to help the budding data engineer understand the core concepts of the scripting language.
