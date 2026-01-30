@@ -18,3 +18,4 @@
 * **Tuples** - A tuple in DBMS refers to a single row in a relational table. It holds data for one specific record, with each value corresponding to a column (attribute) in the table. Tuples are unique and identified using a primary key, which prevents duplicates.
 * **Iterable** - The collection of items you want to loop through.  
 * **Iteration** -The repetition of a process or utterance***
+* **Variable** - A loop variable that takes on the value of the current item in the `iterable` during each iteration.
