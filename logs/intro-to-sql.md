@@ -1,11 +1,10 @@
 > **Learning Log** - Intro to SQL 
 > **Date:** 2026-01-30   
 > **Source / Exercise:** SQLBolt / ChatGPT  
-> **Goal of today's study:**  
-> What SQL is, programs that use it, and how SQL pulls, organizes and edits data
+> **Summary:** What SQL is, programs that use it, and how SQL pulls, organizes and edits data.
 
-# Quick Reference
-- [Glossary](#glossary "Definitions of common SQL terms")
+### Quick Reference
+
 - [What's SQL?](#what-is-sql "Basic description of what SQL is")
 - [What Are Queries?](#what-are-queries "Basic description of what a query is in SQL")
 - [Query Syntax](#query-syntax "Why order of operations matter")
@@ -13,21 +12,11 @@
   - [Visual Analogy](#visual-analogy "Easy way to think of SQL's order of operations")
   - [Quick Guide Table](#quick-guide-table "Table provided for quick reference for the order of operations")
 - [Example](#example "An example SQL script written in Python")
+- [Key Terms](#key-terms "a short list of the terms used to describe the code presented in this log)
+
 ---
 
-## Glossary 
-
-* **Query** – A request to a database to retrieve or manipulate data
-* **Expression** – A calculation or operation used to transform or evaluate data in a query
-* **Modulo** – The remainder of a division operation (`5 % 2 = 1`)
-* **Schema** – The structure of a database, including tables, columns, and relationships
-* **Condition** – A logical statement that filters or controls data returned by a query
-* **Concatenation** – Combining two or more strings into one
-* **Aggregate** – A function that summarizes data across multiple rows (e.g., `SUM`, `AVG`, `COUNT`)
-  
----
-
-## What is SQL 
+# What is SQL 
 
 SQL means Structured Query Language. 
 It is a standardized language with a defined syntax used to command databases and retrieve specific datasets.   
@@ -55,11 +44,13 @@ SELECT column1, column2, column3
 FROM mytable
 WHERE condition;
 ```
+
 - `SELECT column1, column2` → tells SQL which columns to return
 - `FROM` table_name → tells SQL which table to look in
 - `WHERE` condition → filters rows so only those matching the condition appear
 
 Example: 
+
 ```sql
 SELECT race, AVG(sentence_years) AS avg_sentence
 FROM court_cases
@@ -68,6 +59,8 @@ ORDER BY avg_sentence DESC;
 ```
 
 **Note:** SQL is case-insensitive for keywords (e.g., SELECT = select), but table and column names can be case-sensitive depending on the database system.
+
+---
 
 ## Order of Operations 
 
@@ -96,36 +89,38 @@ The logical execution order of SQL is:
 
 **Important Note:** `SELECT` is last logically, even though it’s written first.
 
-### Quick Guide Table 
-⬅️
-| Step | Clause   | What Happens                                     |
-| ---- | -------- | ------------------------------------------------ |
-| 1    | `FROM`     | Identify which table(s) to use                   |
-| 2    | `JOIN`     | Combine rows from multiple tables (if any)       |
-| 3    | `WHERE`    | Filter rows based on conditions                  |
-| 4    | `GROUP BY` | Group filtered rows for aggregation              |
-| 5    | `HAVING`   | Filter groups after aggregation                  |
-| 6    | `SELECT`   | Choose which columns (or calculations) to return |
-| 7    | `ORDER BY` | Sort the final results                           |
+  ### Quick Guide Table 
+  
+  | Step | Clause   | What Happens                                     |
+  | ---- | -------- | ------------------------------------------------ |
+  | 1    | `FROM`     | Identify which table(s) to use                   |
+  | 2    | `JOIN`     | Combine rows from multiple tables (if any)       |
+  | 3    | `WHERE`    | Filter rows based on conditions                  |
+  | 4    | `GROUP BY` | Group filtered rows for aggregation              |
+  | 5    | `HAVING`   | Filter groups after aggregation                  |
+  | 6    | `SELECT`   | Choose which columns (or calculations) to return |
+  | 7    | `ORDER BY` | Sort the final results                           |
 
-📌 **QUICK TIP**
-> JOIN decides what data exists; WHERE decides what data survives.
+  📌 **QUICK TIP**
+  > JOIN decides what data exists; WHERE decides what data survives.
 
-### Conceptual Flow
+  ### Conceptual Flow
 
-It's helpful to think of data scripts (often written in Python) like this:
+  It's helpful to think of data scripts (often written in Python) like this:
 
-**IMPORT** tools  
-**DEFINE** reusable functions  
-**CONNECT** to data  
-**QUERY** data  
-**LOOP** through results  
-**RETURN** or **SAVE** output  
-**CLOSE** resources   
+  **IMPORT** tools  
+  **DEFINE** reusable functions  
+  **CONNECT** to data  
+  **QUERY** data  
+  **LOOP** through results  
+  **RETURN** or **SAVE** output  
+  **CLOSE** resources   
+
+---
 
 ## Example 
 
-*Our example script for the day:*
+*An example script:*
 > This example shows how SQL queries are commonly embedded inside a Python script to retrieve and analyze data from a database.
 
 ```python
@@ -179,16 +174,37 @@ def fetch_ice_violence_cases(conn):
       );
     """
 
-    cursor = conn.cursor()
-    cursor.execute(query)
-    return cursor.fetchall()
+    cursor = conn.cursor()    # Create a cursor object to execute SQL
+    cursor.execute(query)     # Run the query against the database
+    return cursor.fetchall()  # Return all results as a list of tuples
 
 
 if __name__ == "__main__":
-    conn = connect_db()
-    cases = fetch_ice_violence_cases(conn)
+    conn = connect_db()                       # Connect to the database
+    cases = fetch_ice_violence_cases(conn)    # Fetch filtered court cases
     for case in cases:
         print(case)
-
     conn.close()
 ```
+
+🔗 This script is demystified at [logs/example-python-script.md](example-python-script.md "Decoding this script with examples, definitions and explanations.") if you want a deep dive into what the script is saying and doing.
+
+---
+
+## Key Terms
+
+In SQL, `SELECT` is officially called a **keyword**. Sometimes people also refer to it as a **clause** (especially when talking about the part of a query that starts with `SELECT` and defines what columns or expressions to return).
+
+| Term          | Example                                   | What it means                                                                                   |
+| ------------- | ----------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| **Keyword**   | `SELECT`, `FROM`, `WHERE`                 | Reserved words in SQL that have a special meaning. They tell the database what to do.           |
+| **Clause**    | `SELECT column1, column2 FROM table_name` | A part of a SQL statement. A clause often starts with a keyword like `SELECT`, `FROM`, `WHERE`. |
+| **Statement** | `SELECT * FROM movies WHERE rating > 8;`  | A complete instruction to the database. A statement can contain multiple clauses.               |
+
+✅ So in short:
+
+* `SELECT` → **keyword**
+* The part `SELECT column1, column2` → **SELECT clause**
+* The whole query with `SELECT ... FROM ... WHERE ...` → **SQL statement**
+
+🔗 A more comprehensive list of terminology can be found in the [Glossary](glossary.md "Glossary page").
