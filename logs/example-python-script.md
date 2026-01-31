@@ -5,12 +5,17 @@
 
 ### Quick Reference
 - [Example Python Script](#example-python-script "An example Python script used to reference when trying to understand what the does")
-- [Demystifying Triple Quotes](#demystifying-triple-quotes "Understanding and demystifying triple quotes")
-  - [What Are Docstrings](#what-are-docstrings "What docstrings are actually for")
-  - [Docstrings ≠ Comments](#docstrings-are-not-comment-blocks "Docstrings Are NOT Comment Blocks")
-  - [Why Use Docstrings](#why-use-docstrings "Why using docstrings is a great idea")
-- [`query = """`](#query-- "Diving into String Literals")
-  -[Why `query = """` is NOT a docstring](#why-query---is-not-a-docstring )
+- [Docstrings](#docstrings-what-they-are "What docstrings are for")
+- [Docstrings Are Not Comments](#docstrings-are-not-comments "Why docstrings are not used for commenting out code")
+- [query = """ (What’s Really Happening)](#query--whats-really-happening "Understanding multiline strings assigned to variables")
+- [Is query = \"\"\" a Docstring?](#is-query--a-docstring "Clarifying when triple quotes create docstrings")
+- [When a String Is a Docstring](#when-a-string-is-a-docstring "Rules for when a string is a true docstring")
+- [Why Triple Quotes Are Used for SQL](#why-triple-quotes-are-used-for-sql "Why triple quotes are used for SQL queries in Python")
+- [Side-by-Side Comparison](#side-by-side-comparison "Comparing docstrings vs string literals")
+  - [✅ This is a docstring](#-this-is-a-docstring "Example of a true docstring")
+  - [❌ This is not a docstring](#-this-is-not-a-docstring "Example of a string literal assigned to a variable")
+- [The One Rule That Matters](#the-one-rule-that-matters "Triple quotes ≠ docstrings, placement does")
+- [Quick Definitions](#quick-definitions "Definitions of string literal and docstring")
 - [Import statement](#import-sqlite3 "What import does and why")
 - [What `def` means](#what-def-means "How giving a function a nickname can save you time")
 - [Functions](#functions "In depth explaination of a function")
@@ -23,8 +28,6 @@
   - [`If`, `elif`, `else`](#if-elif-else "Useful for: Filtering, Validation and Conditional logic.")
   - [`For` and `In`](#for-and-in "For each one of these in all of this category/column...")
 - [Closing the database connection](#connclose "Terminating the connection created by `connect_db()`")
-
-> ❗ links are broken. Need to comeback and edit this page. Check others 🤯
 
 # Example Python Script
 We will use the following script to highlight key components and define their use to help the budding data engineer understand the core concepts of the scripting language.
