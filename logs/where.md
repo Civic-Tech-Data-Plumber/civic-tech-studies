@@ -56,7 +56,7 @@ List and descripions of operators:
 
 ---
 
-## LIKE & NOT LIKE 
+## Pattern Matching (LIKE / NOT LIKE)
 
 We're going to cover ==`LIKE` and `NOT LIKE` in depth because they're essential in the civic-tech field, and that's my goal, as you may have become aware.
 
@@ -150,9 +150,7 @@ This is extremely useful for:
 * Excluding boilerplate text
 * Narrowing analysis
 
----
-
-### One Important Professional Note ⚠️
+### One Important Professional Note
 
 `LIKE`:
 
@@ -162,6 +160,26 @@ This is extremely useful for:
   - Full-text search
   - Regex
   - Indexed search columns
+
+---
+
+
+## List Filters (IN / NOT IN)
+
+```sql
+WHERE state IN ('CA', 'TX', 'NY')
+```
+
+---
+
+## NULL Handling
+
+Filtering NULLs requires special syntax:
+
+```sql
+WHERE column IS NULL
+WHERE column IS NOT NULL
+```
 
 ---
 
