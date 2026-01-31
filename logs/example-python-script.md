@@ -592,8 +592,9 @@ conn.close()
 
 ## Safety Considerations
 
-When coding as a professional it is important to consider bad actors and mistakes. 
-In our example, we hard coded everything. Which isn't bad for an example. But in real-world applications, we need to consider safety. 
+When coding as a professional it is important to consider bad actors and mistakes.  
+In our example, we hard coded everything. Which isn't bad for an example.  
+But in real-world applications, we need to consider safety. 
 
 ### **1. The problem: raw SQL strings**
 
@@ -627,7 +628,6 @@ cursor.execute(query)
 
 > This could delete your table! 😱
 
----
 
 ### **2. The safe way: parameterized queries**
 
@@ -660,9 +660,24 @@ cursor.execute(query, (jurisdiction, start_date, end_date))
 
 ✅ Result: safer queries, immune to SQL injection, and easier to maintain if you ever need dynamic values.
 
----
+In Python’s sqlite3 module, the typical placeholder is a ?.
+For example:
+
+```python
+cursor.execute(
+    "SELECT * FROM users WHERE username = ?",
+    (username,)
+)
+
+```
 
 ### **3. Why it matters**
+
+Parameterized Queries: In real apps, you rarely want to hard‑code values directly into your SQL string. Instead, use *parameterized queries* where the SQL has `?` placeholders and the values are passed separately. This keeps the SQL logic separate from the data and prevents SQL injection attacks — a class of vulnerabilities where user input could otherwise be interpreted as SQL code. In Python’s sqlite3, it looks like:
+
+```python
+cursor.execute("SELECT * FROM court_cases WHERE jurisdiction = ? AND date_filed >= ?", (jurisdiction, start_date))
+```
 
 * If you ever accept input from outside your code (forms, APIs, files), **never** put it directly into a raw SQL string.
 * Parameterized queries are the standard way to prevent security risks.
@@ -678,4 +693,3 @@ cursor.execute(query, (jurisdiction, start_date, end_date))
 ```python
 cursor.execute("SELECT * FROM table WHERE col = ?", (value,))
 ```
-
