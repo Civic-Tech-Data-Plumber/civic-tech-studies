@@ -1,4 +1,4 @@
-> **Learning Log** - Glossary
+> **Learning Log** - Glossary & Key Terms
 
 # Glossary 
 
@@ -18,8 +18,9 @@
 * **Tuples** - A tuple in DBMS refers to a single row in a relational table. It holds data for one specific record, with each value corresponding to a column (attribute) in the table. Tuples are unique and identified using a primary key, which prevents duplicates.
 * **Iterable** - The collection of items you want to loop through.  
 * **Iteration** -The repetition of a process or utterance***
-* **Variable** - A loop variable that takes on the value of the current item in the `iterable` during each iteration.
-
+* **Variable** - A named reference used to store a value in a program so it can be reused or changed later.
+* **String Literal** - Text written directly into code and enclosed in quotes, used to represent fixed data such as messages, labels, or queries.
+* **Docstring** - A string literal placed at the start of a file, function, or class to describe its purpose and usage.
 ---
 
 ## Key Terms
