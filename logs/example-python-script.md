@@ -9,6 +9,8 @@
   - [What Are Docstrings](#what-are-docstrings "What docstrings are actually for")
   - [Docstrings ≠ Comments](#docstrings-are-not-comment-blocks "Docstrings Are NOT Comment Blocks")
   - [Why Use Docstrings](#why-use-docstrings "Why using docstrings is a great idea")
+- [`query = """`](#query-- "Diving into String Literals")
+  -
 - [Import statement](#import-sqlite3 "What import does and why")
 - [What `def` means](#what-def-means "How giving a function a nickname can save you time")
 - [Functions](#functions "In depth explaination of a function")
@@ -148,7 +150,13 @@ Python will still **create a string object,** which is wasteful and confusing.
 
 ## `query = """`
 
-**Is this a docstring?**   
+`query = """` defines the SQL query as a string so Python can send it to the database to be executed later.
+
+> query = """ stores a SQL statement inside a Python variable.  
+> This allows Python to treat the SQL query as data that can be passed to the database engine.  
+> The query is not run at this point — it is executed later when passed to cursor.execute(query).
+
+**Is `query = """` a docstring?**   
 ✖️ No! This is not a docstring, too.  
 This is a **multiline string literal assigned to a variable.**
 Triple quotes are just a way to create multi-line strings.  
@@ -164,8 +172,9 @@ SELECT
 ```
 
 > The triple quotes here are **only being used for formatting convenience**, not documentation.
+> The triple quotes armake the SQL easier to read and format *for humans*.
 
-### Why this is NOT a docstring
+### Why `query = """` is NOT a docstring
 
 A string is **only** a docstring if **all** of the following are true:
 
@@ -287,6 +296,11 @@ def fetch_ice_violence_cases(conn):
 > Placement does.**
 
 That rule alone clears up ~90% of confusion around this topic.
+
+## Docstring vs String Literal
+
+* **String Literal** - Text written directly into code and enclosed in quotes, used to represent fixed data such as messages, labels, or queries.
+* **Docstring** - A string literal placed at the start of a file, function, or class to describe its purpose and usage.
 
 ---
 
