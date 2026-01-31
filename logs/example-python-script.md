@@ -104,7 +104,7 @@ if __name__ == "__main__":
 
 The first thing we see in this sample is `"""`
 
-This is a `docstring`.  
+Triple quotes `"""` are used to define docstrings when placed in specific locations .
 A docstring:
 - Is stored in memory
 - Can be accessed programmatically
@@ -125,6 +125,7 @@ Best practices for data engineers wanting to create a comment is to use the `#` 
 Use docstrings (`"""`) for documentation.
 
 #### Beginner Mistakes:
+
 ❌ Docstrings are not used to comment out blocks of code:
 ```python
 """
@@ -145,7 +146,152 @@ Python will still **create a string object,** which is wasteful and confusing.
 
 ---
 
+## `query = """`
+
+**Is this a docstring?**   
+✖️ No! This is not a docstring, too.  
+This is a **multiline string literal assigned to a variable.**
+Triple quotes are just a way to create multi-line strings.  
+Whether that string becomes a docstring depends entirely on **where it appears in the code**.
+
+```python
+query = """
+SELECT
+    case_id,
+    case_name,
+    ...
+"""
+```
+
+> The triple quotes here are **only being used for formatting convenience**, not documentation.
+
+### Why this is NOT a docstring
+
+A string is **only** a docstring if **all** of the following are true:
+
+1. It is a string literal
+2. It appears **immediately after**:
+
+   * the start of a file, **or**
+   * a `def` line, **or**
+   * a `class` line
+3. It is **not assigned to a variable**
+
+Your example fails condition #3.
+
+When we explicitly write:
+
+```python
+query = """ ... """
+```
+
+That assignment changes everything.
+
+Python now treats this as:
+
+> “Create a string object and store it in the variable `query`.”
+
+It does **not** get attached to `__doc__`.
+It is **not introspectable as documentation**.
+It is **data**, not metadata.
+
+---
+
+### What this *actually* is
+
+This line:
+
+```python
+query = """ ... """
+```
+
+creates:
+
+* A **string**
+* Stored in the variable `query`
+* Intended to be **passed to the database engine**
+* Executed later by:
+
+```python
+cursor.execute(query)
+```
+
+So the SQL lives inside Python as **data**, not as code and not as documentation.
+
+---
+
+### Why triple quotes are used *here*
+
+Triple quotes are used because SQL queries are:
+
+* Long
+* Multi-line
+* Easier to read when formatted like real SQL
+
+This:
+
+```python
+query = "SELECT case_id, case_name FROM court_cases WHERE jurisdiction = 'Los Angeles, CA';"
+```
+
+is valid but unreadable.
+
+Triple quotes allow you to preserve:
+
+* Line breaks
+* Indentation
+* SQL readability
+
+That’s it. No magic beyond that.
+
+---
+
+### Compare side-by-side (this is the key insight)
+
+### ✅ This **is a docstring**
+
+```python
+def fetch_ice_violence_cases(conn):
+    """
+    Fetch court cases from Los Angeles, CA that reference ICE-related violence.
+    """
+```
+
+Why?
+
+* First statement after `def`
+* Not assigned
+* Stored as `fetch_ice_violence_cases.__doc__`
+
+
+### ❌ This is **NOT a docstring**
+
+```python
+def fetch_ice_violence_cases(conn):
+    query = """
+    SELECT * FROM court_cases;
+    """
+```
+> Although this SQL block uses triple quotes, it is not a docstring. It is a multiline string literal assigned to the variable `query`, allowing readable formatting of the SQL statement before execution.
+
+**Why?**
+
+* Assigned to a variable
+* Used as executable data
+* Has nothing to do with documentation
+
+
+#### One subtle but important rule
+
+> **Triple quotes do not make something a docstring.  
+> Placement does.**
+
+That rule alone clears up ~90% of confusion around this topic.
+
+---
+
 ## `import` sqlite3
+
 `import` is a Python statement that lets you use code from another module or library.  
     *A "module" is just a Python file (or collection of files) that provides functions, classes, or variables.*  
 By importing sqlite3, we call its functions into our script instead of rewriting them from scratch.
