@@ -1,39 +1,68 @@
 Learning Log - Understand `WHERE`  Date: 2026-01-31
-Source / Exercise: SQLBolt / ChatGPT
-Summary: Explainer of the `WHERE` keyword, how to use it, and how SQL pulls, organizes and selects data.
+Source / Exercise: SQLBolt / ChatGPT  
+Summary: Explain how the SQL `WHERE` clause filters data.
 
-> Learning log - Day 4
+> ❗ STILL NEEDS EDITING AND QUICK REFERENCE FIX!
 
 ### Quick Reference
 
-- [WHERE](#where "Basic description of what WHERE is")
-
+- [WHERE Clause Basics](#where-clause-basics "What the WHERE clause does")
+- [Comparison Operators](#comparison-operators "Operators like =, !=, >, <, etc.")
+- [Pattern Matching (LIKE / NOT LIKE)](#pattern-matching-like--not-like "Using LIKE with wildcards")
+- [Range Filters (BETWEEN / NOT BETWEEN)](#range-filters-between--not-between "Using inclusive ranges")
+- [List Filters (IN / NOT IN)](#list-filters-in--not-in "Filtering against a list")
+- [NULL Handling](#null-handling "How to filter NULLs correctly")
+- [Common Mistakes](#common-mistakes "Failure modes and gotchas")
+- [Examples](#examples "Example queries using WHERE")
 
 ---
 
-# WHERE 
+# WHERE Clause Basics
 
-> **One-Sentence Mental Model (Memorize This)**
+> **One-Sentence Mental Model (Memorize This)**: it filters rows by testing conditions. 
 > Decide *what kind of data*, *how precise*, and *what to include or exclude*, then choose the operator.
 
-| Operator / Keyword              | Condition Description                                 | SQL Example                     |
-| ------------------------------- | ----------------------------------------------------- | ------------------------------- |
-| `=`, `!=`, `<`, `<=`, `>`, `>=` | Standard comparison operators (equality & inequality) | `col_name != 4`                 |
-| `BETWEEN ... AND ...`           | Value is within a range (inclusive)                   | `col_name BETWEEN 1.5 AND 10.5` |
-| `NOT BETWEEN ... AND ...`       | Value is outside a range (inclusive)                  | `col_name NOT BETWEEN 1 AND 10` |
-| `IN (...)`                      | Value exists in a specified list                      | `col_name IN (2, 4, 6)`         |
-| `NOT IN (...)`                  | Value does not exist in a specified list              | `col_name NOT IN (1, 3, 5)`     |
-| LIKE, NOT LIKE                  | Value exists (or not) in a text strings               | ``summary LIKE '%ICE%'`         |
+```sql
+SELECT *
+FROM table_name
+WHERE condition;
+```
+
+## Common Operators
+
+List and descripions of operators:
+
+| Operator / Keyword              | Condition Description                                 | SQL Example                    |
+| ------------------------------- | ----------------------------------------------------- | -------------------------------|
+| `=`, `!=`, `<`, `<=`, `>`, `>=` | Standard comparison operators (equality & inequality) | `col_name != 4`                |
+| `BETWEEN ... AND ...`           | Value is within a range (inclusive)                   | `col_name BETWEEN 1.5 AND 10.5`|
+| `NOT BETWEEN ... AND ...`       | Value is outside a range (inclusive)                  | `col_name NOT BETWEEN 1 AND 10`|
+| `IN (...)`                      | Value exists in a specified list                      | `col_name IN (2, 4, 6)`        |
+| `NOT IN (...)`                  | Value does not exist in a specified list              | `col_name NOT IN (1, 3, 5)`    |
+| LIKE, NOT LIKE                  | Value exists (or not) in a text strings               | ``summary LIKE '%ICE%'`        |
 - `BETWEEN` is inclusive of both boundary values.
 - `IN` and `NOT IN` are often clearer and faster than chaining many OR conditions.
 - These operators are commonly combined with `AND` / `OR` for more complex filters.
 - `LIKE` uses wildcards `%` to mach any number of characters, and `_` to match exactly one character
+
+| Operator | Meaning                  | Example                 |
+| -------- | ------------------------ | ----------------------- |
+| `=`      | Equal to                 | `age = 18`              |
+| `!=`     | Not equal to             | `status != 'Dismissed'` |
+| `<`      | Less than                | `score < 50`            |
+| `<=`     | Less than or equal to    | `age <= 65`             |
+| `>`      | Greater than             | `salary > 50000`        |
+| `>=`     | Greater than or equal to | `height >= 170`         |
 
 ---
 
 ## LIKE & NOT LIKE 
 
 We're going to cover ==`LIKE` and `NOT LIKE` in depth because they're essential in the civic-tech field, and that's my goal, as you may have become aware.
+
+```sql
+WHERE name LIKE 'San%'
+```
 
 | Operator / Keyword | Condition Description                                  | SQL Example                         |
 |-------------------|--------------------------------------------------------|-------------------------------------|
