@@ -10,7 +10,7 @@
   - [Docstrings ≠ Comments](#docstrings-are-not-comment-blocks "Docstrings Are NOT Comment Blocks")
   - [Why Use Docstrings](#why-use-docstrings "Why using docstrings is a great idea")
 - [`query = """`](#query-- "Diving into String Literals")
-  -
+  -[Why `query = """` is NOT a docstring](#why-query---is-not-a-docstring )
 - [Import statement](#import-sqlite3 "What import does and why")
 - [What `def` means](#what-def-means "How giving a function a nickname can save you time")
 - [Functions](#functions "In depth explaination of a function")
@@ -102,33 +102,61 @@ if __name__ == "__main__":
 
 ---
 
-## Demystifying Triple Quotes
+You’re right — the content is *correct*, but it’s doing too much work, too many times. The core confusion for readers is actually very small:
 
-The first thing we see in this sample is `"""`
+> **“Why do triple quotes sometimes mean documentation and sometimes not?”**
 
-Triple quotes `"""` are used to define docstrings when placed in specific locations .
-A docstring:
-- Is stored in memory
-- Can be accessed programmatically
-- Is used by help tools and documentation generators
+Everything else should orbit that single question.
 
-### What Are Docstrings
-Docstrings are structured documentation, not comments.
+Below is a **polished, tightened rewrite** that:
 
-They are used to:
+* Removes repetition
+* Keeps the teaching authority you want
+* Preserves accuracy
+* Reads cleanly on a first pass
+* Still supports later glossary entries
 
-- Explain what a module, function, or class does
-- Describe parameters and return values
-- Generate documentation automatically
+I’ve kept your structure but simplified the cognitive load.
 
-### Docstrings Are NOT Comment Blocks
+---
 
-Best practices for data engineers wanting to create a comment is to use the `#` symbol (per line).  
-Use docstrings (`"""`) for documentation.
+## Demystifying Triple Quotes (`"""`)
 
-#### Beginner Mistakes:
+Triple quotes (`"""`) are used in Python to create **multi-line strings**.
 
-❌ Docstrings are not used to comment out blocks of code:
+Sometimes those strings become **docstrings**.
+Sometimes they’re just **data**.
+
+The difference depends entirely on **where the string appears in the code**.
+
+---
+
+## Docstrings (What They Are)
+
+A **docstring** is a string literal used as **documentation**, not a comment.
+
+Docstrings are used to:
+
+* Explain what a module, function, or class does
+* Describe parameters and return values
+* Support tools like `help()` and documentation generators
+
+When used correctly, docstrings:
+
+* Are stored in memory
+* Can be accessed programmatically (via `__doc__`)
+* Help make code self-documenting
+
+---
+
+## Docstrings Are Not Comments
+
+Docstrings are **not** meant to comment out code.
+
+To leave comments in Python, use `#`.
+
+❌ **Incorrect use of docstrings:**
+
 ```python
 """
 conn = connect_db()
@@ -136,31 +164,18 @@ run_query(conn)
 """
 ```
 
-Python will still **create a string object,** which is wasteful and confusing.  
-*Reminder:* ❌ Do not use `"""` to comment out blocks of code, use `#` instead.
+Python will still create a string object here, which is wasteful and misleading.
 
-### Why Use Docstrings
+✅ **Correct approach:**
 
-- They explain intent, not just mechanics
-- They signal seriousness and clarity
-- They scale well as scripts grow
-- They make our code self-documenting
+```python
+# conn = connect_db()
+# run_query(conn)
+```
 
 ---
 
-## `query = """`
-
-`query = """` defines the SQL query as a string so Python can send it to the database to be executed later.
-
-> query = """ stores a SQL statement inside a Python variable.  
-> This allows Python to treat the SQL query as data that can be passed to the database engine.  
-> The query is not run at this point — it is executed later when passed to cursor.execute(query).
-
-**Is `query = """` a docstring?**   
-✖️ No! This is not a docstring, too.  
-This is a **multiline string literal assigned to a variable.**
-Triple quotes are just a way to create multi-line strings.  
-Whether that string becomes a docstring depends entirely on **where it appears in the code**.
+## `query = """` (What’s Really Happening)
 
 ```python
 query = """
@@ -171,93 +186,78 @@ SELECT
 """
 ```
 
-> The triple quotes here are **only being used for formatting convenience**, not documentation.
-> The triple quotes armake the SQL easier to read and format *for humans*.
+This line stores a SQL query inside a Python variable named `query`.
 
-### Why `query = """` is NOT a docstring
+At this point:
 
-A string is **only** a docstring if **all** of the following are true:
+* The query is **defined**, not executed
+* Python treats the SQL as **data**
+* The query is run later using:
+
+```python
+cursor.execute(query)
+```
+
+---
+
+## Is `query = """` a Docstring?
+
+**No.**
+
+Although it uses triple quotes, this is **not** a docstring.
+It is a **multiline string literal assigned to a variable**.
+
+Triple quotes do **not** automatically create docstrings.
+
+---
+
+## When a String *Is* a Docstring
+
+A string is a docstring **only if all of the following are true**:
 
 1. It is a string literal
-2. It appears **immediately after**:
+2. It appears immediately after:
 
    * the start of a file, **or**
    * a `def` line, **or**
    * a `class` line
 3. It is **not assigned to a variable**
 
-Your example fails condition #3.
-
-When we explicitly write:
-
-```python
-query = """ ... """
-```
-
-That assignment changes everything.
-
-Python now treats this as:
-
-> “Create a string object and store it in the variable `query`.”
-
-It does **not** get attached to `__doc__`.
-It is **not introspectable as documentation**.
-It is **data**, not metadata.
+If any of these conditions are not met, the string is **not** a docstring.
 
 ---
 
-### What this *actually* is
+## Why Triple Quotes Are Used for SQL
 
-This line:
+Triple quotes are used here purely for **readability**.
 
-```python
-query = """ ... """
-```
-
-creates:
-
-* A **string**
-* Stored in the variable `query`
-* Intended to be **passed to the database engine**
-* Executed later by:
-
-```python
-cursor.execute(query)
-```
-
-So the SQL lives inside Python as **data**, not as code and not as documentation.
-
----
-
-### Why triple quotes are used *here*
-
-Triple quotes are used because SQL queries are:
+SQL queries are often:
 
 * Long
 * Multi-line
-* Easier to read when formatted like real SQL
+* Easier to understand when formatted like real SQL
 
-This:
+This works:
 
 ```python
 query = "SELECT case_id, case_name FROM court_cases WHERE jurisdiction = 'Los Angeles, CA';"
 ```
 
-is valid but unreadable.
+But it’s hard to read.
 
-Triple quotes allow you to preserve:
+Triple quotes preserve:
 
 * Line breaks
 * Indentation
-* SQL readability
+* Human-friendly formatting
 
-That’s it. No magic beyond that.
+Nothing more than that.
 
 ---
 
-### Compare side-by-side (this is the key insight)
+## Side-by-Side Comparison
 
-### ✅ This **is a docstring**
+### ✅ This *is* a docstring
 
 ```python
 def fetch_ice_violence_cases(conn):
@@ -269,11 +269,12 @@ def fetch_ice_violence_cases(conn):
 Why?
 
 * First statement after `def`
-* Not assigned
+* Not assigned to a variable
 * Stored as `fetch_ice_violence_cases.__doc__`
 
+---
 
-### ❌ This is **NOT a docstring**
+### ❌ This is *not* a docstring
 
 ```python
 def fetch_ice_violence_cases(conn):
@@ -281,26 +282,28 @@ def fetch_ice_violence_cases(conn):
     SELECT * FROM court_cases;
     """
 ```
-> Although this SQL block uses triple quotes, it is not a docstring. It is a multiline string literal assigned to the variable `query`, allowing readable formatting of the SQL statement before execution.
 
-**Why?**
+Why?
 
 * Assigned to a variable
 * Used as executable data
-* Has nothing to do with documentation
+* Not documentation
 
+---
 
-#### One subtle but important rule
+## The One Rule That Matters
 
-> **Triple quotes do not make something a docstring.  
+> **Triple quotes don’t make something a docstring.
 > Placement does.**
 
-That rule alone clears up ~90% of confusion around this topic.
+That single rule resolves most confusion around this topic.
 
-## Docstring vs String Literal
+---
 
-* **String Literal** - Text written directly into code and enclosed in quotes, used to represent fixed data such as messages, labels, or queries.
-* **Docstring** - A string literal placed at the start of a file, function, or class to describe its purpose and usage.
+## Quick Definitions
+
+* **String Literal** – Text written directly into code and enclosed in quotes, used as fixed data (messages, labels, SQL queries).
+* **Docstring** – A string literal placed at the start of a file, function, or class to document its purpose and usage.
 
 ---
 
