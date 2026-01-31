@@ -29,6 +29,7 @@
   - [`if`, `elif`, `else`](#if-elif-else "Useful for conditional statements")
   - [`for` and `in`](#for-and-in "Iterating over sequences")
 - [`conn.close()`](#connclose "Terminating the connection created by `connect_db()`")
+- [Safety Considerations](#safety-considerations "Learn to protect your data")
 
 # Example Python Script
 We will use the following script to highlight key components and define their use to help the budding data engineer understand the core concepts of the scripting language.
@@ -104,23 +105,7 @@ if __name__ == "__main__":
 
 > This example shows how SQL queries are commonly embedded inside a Python script to retrieve and analyze data from a database.
 
----
-
-You’re right — the content is *correct*, but it’s doing too much work, too many times. The core confusion for readers is actually very small:
-
-> **“Why do triple quotes sometimes mean documentation and sometimes not?”**
-
-Everything else should orbit that single question.
-
-Below is a **polished, tightened rewrite** that:
-
-* Removes repetition
-* Keeps the teaching authority you want
-* Preserves accuracy
-* Reads cleanly on a first pass
-* Still supports later glossary entries
-
-I’ve kept your structure but simplified the cognitive load.
+> ❗ This example assumes the database exists and contains data—real scripts should handle exceptions for missing files, bad connections, or empty queries.
 
 ---
 
@@ -493,6 +478,8 @@ if __name__ == "__main__":
     cases = fetch_ice_violence_cases(conn)
 ```
 
+> This ensures your database queries don’t run automatically if this file is imported as a module elsewhere.
+
 What `__name__` means
 
 Every Python file has a built-in variable called __name__.  
@@ -600,3 +587,95 @@ conn.close()
 
 * This **terminates the connection created by `connect_db()`**
 * It frees system resources and properly ends communication with the database
+
+---
+
+## Safety Considerations
+
+When coding as a professional it is important to consider bad actors and mistakes. 
+In our example, we hard coded everything. Which isn't bad for an example. But in real-world applications, we need to consider safety. 
+
+### **1. The problem: raw SQL strings**
+
+Right now, in our example:
+
+```python
+query = """
+SELECT case_id, case_name
+FROM court_cases
+WHERE jurisdiction = 'Los Angeles, CA'
+  AND date_filed BETWEEN '2025-01-01' AND '2025-07-31';
+"""
+cursor.execute(query)
+```
+
+Here, everything is hardcoded. This works fine because we typed the values ourselves.
+
+**The danger:** if any of the values come from user input (e.g., a form, API, or variable), directly inserting them into a string can let someone **inject malicious SQL**. This is called **SQL injection**.
+
+Example of a risky pattern:
+
+```python
+user_input = "Los Angeles, CA'; DROP TABLE court_cases; --"
+query = f"""
+SELECT case_id, case_name
+FROM court_cases
+WHERE jurisdiction = '{user_input}';
+"""
+cursor.execute(query)
+```
+
+> This could delete your table! 😱
+
+---
+
+### **2. The safe way: parameterized queries**
+
+Python’s `sqlite3` library supports **parameterized queries**, which separate **SQL logic** from **data**.
+
+Instead of building the SQL string manually, you use **placeholders** (`?`) where data will go, and then supply the values separately.
+
+Example:
+
+```python
+jurisdiction = "Los Angeles, CA"
+start_date = "2025-01-01"
+end_date = "2025-07-31"
+
+query = """
+SELECT case_id, case_name
+FROM court_cases
+WHERE jurisdiction = ?
+  AND date_filed BETWEEN ? AND ?;
+"""
+
+cursor.execute(query, (jurisdiction, start_date, end_date))
+```
+
+**What’s happening:**
+
+1. The SQL engine sees the `?` placeholders as “slots.”
+2. The values `(jurisdiction, start_date, end_date)` are **passed separately**.
+3. The database safely inserts the data without letting it break the SQL logic.
+
+✅ Result: safer queries, immune to SQL injection, and easier to maintain if you ever need dynamic values.
+
+---
+
+### **3. Why it matters**
+
+* If you ever accept input from outside your code (forms, APIs, files), **never** put it directly into a raw SQL string.
+* Parameterized queries are the standard way to prevent security risks.
+
+---
+
+#### TL;DR
+
+* **Raw string** = good for teaching or hardcoded values.
+* **Parameterized query** = safe for dynamic data; uses `?` as placeholders.
+* Example:
+
+```python
+cursor.execute("SELECT * FROM table WHERE col = ?", (value,))
+```
+
