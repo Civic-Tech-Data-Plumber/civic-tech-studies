@@ -7,13 +7,7 @@ Summary: Explainer of the `WHERE` keyword, how to use it, and how SQL pulls, org
 ### Quick Reference
 
 - [WHERE](#where "Basic description of what WHERE is")
-- [What Are Queries?](#what-are-queries "Basic description of what a query is in SQL")
-- [Query Syntax](#query-syntax "Why order of operations matter")
-- [Order of Operations](#order-of-operations "Logical order of operations performed by SQL databases")
-  - [Visual Analogy](#visual-analogy "Easy way to think of SQL's order of operations")
-  - [Quick Guide Table](#quick-guide-table "Table provided for quick reference for the order of operations")
-- [Example](#example "An example SQL script written in Python")
-- [Key Terms](#key-terms "a short list of the terms used to describe the code presented in this log)
+
 
 ---
 
