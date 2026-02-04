@@ -1,9 +1,14 @@
-> Learning log - Day 1  
-> Today we're learning how to paginate results for easier deployment and readability.
+> **Learning Log:** - Example Python Script Date: 2026-01-30  
+> **Source / Exercise:** SQLBolt and ChatGPT  
+> **Summary:** Learning professional methods on how to paginate table returns.
 
+### Quick Reference
+- [How `LIMIT` and `OFFSET` Works](#how-limit--offset-works)
+- [Simple Pagination Code Example](#shorter--simpler-syntax)
+- [Auto Pagination Code Example](#how-to-avoid-manually-updating-offset)
 ---
 
-### 1️⃣ How `LIMIT` + `OFFSET` works
+### How `LIMIT` + `OFFSET` works
 
 `LIMIT` + `OFFSET` is SQL’s way of paginating results—basically slicing your large dataset into smaller “pages” that are easier to handle or display. 
 
@@ -35,7 +40,7 @@ LIMIT 100 OFFSET 200;
 
 ---
 
-### 2️⃣ Shorter / simpler syntax
+### Shorter / simpler syntax
 
 Many SQL databases support **`LIMIT num_start, num_rows`**:
 
@@ -49,13 +54,13 @@ LIMIT 200, 100; -- third page
 * First number = offset
 * Second number = limit (number of rows)
 
-📌 **Note:** SQLite officially uses `LIMIT x OFFSET y`, while MySQL allows `LIMIT offset, count`. Always check your DB.
+> 📌 **Note:** SQLite officially uses `LIMIT x OFFSET y`, while MySQL allows `LIMIT offset, count`. *Always check your DB.*
 
 ---
 
-### 3️⃣ How to avoid manually updating OFFSET
+### How to avoid manually updating OFFSET
 
-If you’re doing this programmatically (Python, etc.), you **calculate the offset dynamically**:
+If you’re doing this programmatically (Python, etc.), you can **calculate the offset dynamically**:
 
 ```python
 rows_per_page = 100
