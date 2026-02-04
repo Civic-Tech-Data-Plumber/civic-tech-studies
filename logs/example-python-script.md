@@ -1,7 +1,7 @@
 > **Learning Log** - Example Python Script
 > **Date:** 2026-01-30   
 > **Source / Exercise:** ChatGPT  
-> **Summary** Defining and understanding each part of a sample SQL script written in Python.
+> **Summary:** Defining and understanding each part of a sample SQL script written in Python.
 
 ### Quick Reference
 - [Example Python Script](#example-python-script "An example Python script used to reference when trying to understand what the does")
