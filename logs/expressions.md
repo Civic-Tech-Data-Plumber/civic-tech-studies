@@ -1,11 +1,12 @@
 > **Learning Log** - Explaining "Expressions"
-> **Date:** 2026-01-30   
+> **Date:** 2026-02-04  
 > **Source / Exercise:** ChatGPT  
 > **Summary:** Defining and understanding of what an expression is, how to retrieve and manipulate the data presented.
 
 # Quick Reference
 - [What's an Expression?](#what-an-expression-is)
 - [Simple Expression Examples](#simplest-expressions)
+-[Literal Values](#literal-values)
 - [Arithmetic Expressions](#arithmetic-expressions)
 - [String expressions](#string-expressions)
 - [Comparison expressions](#comparison-expressions)
@@ -13,8 +14,8 @@
 - [NULL-handling expressions](#null-handling-expressions)
 - [Expressions in ORDER BY](#expressions-in-order-by)
 - [Expressions vs functions](#expressions-vs-functions)
-- [Where Expressions Appear](where-expressions-can-appear)
-- [What Expressions Are *Not*](#what-expressions-are-not-)
+- [Where Expressions Appear](#where-expressions-can-appear)
+- [What Expressions Are *Not*](#what-expressions-are-not)
 - [Why expressions matter in civic-tech](#why-expressions-matter-in-civic-tech)
 - [One-sentence mental model](#a-one-sentence-mental-model-worth-keeping)
 
@@ -76,7 +77,8 @@ These are expressions too.
 
 ---
 
-## Arithmetic expressions (very common)
+## Arithmetic expressions 
+(very common)
 
 ```sql
 SELECT
@@ -181,7 +183,8 @@ Used constantly in:
 
 ## NULL-handling expressions
 
-### COALESCE (professional essential)
+### COALESCE 
+(professional essential)
 
 ```sql
 SELECT
