@@ -8,16 +8,16 @@
 - [Simple Expression Examples](#simplest-expressions)  
 - [Literal Values](#literal-values)
 - [Arithmetic Expressions](#arithmetic-expressions)
-- [String expressions](#string-expressions)
-- [Comparison expressions](#comparison-expressions)
-- [Conditional expression](#conditional-expressions)
-- [NULL-handling expressions](#null-handling-expressions)
+- [String Expressions](#string-expressions)
+- [Comparison Expressions](#comparison-expressions)
+- [Conditional Expression](#conditional-expressions)
+- [NULL-Handling Expressions](#null-handling-expressions)
 - [Expressions in ORDER BY](#expressions-in-order-by)
-- [Expressions vs functions](#expressions-vs-functions)
+- [Expressions vs Gunctions](#expressions-vs-functions)
 - [Where Expressions Appear](#where-expressions-can-appear)
 - [What Expressions Are *Not*](#what-expressions-are-not)
-- [Why expressions matter in civic-tech](#why-expressions-matter-in-civic-tech)
-- [One-sentence mental model](#a-one-sentence-mental-model-worth-keeping)
+- [Why Expressions Matter in Civic-Tech](#why-expressions-matter-in-civic-tech)
+- [One-Sentence Mental Model](#a-one-sentence-mental-model-worth-keeping)
 
 ---
 
