@@ -1,4 +1,4 @@
-> **Learning Log** - Organizing Data
+> **Learning Log** - Organizing Data  
 > **Date:** 2026-02-04  
 > **Source / Exercise:** ChatGPT  
 > **Summary:** Ways to **organize and refine your query results**.
