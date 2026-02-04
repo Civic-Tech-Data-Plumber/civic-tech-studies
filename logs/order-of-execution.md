@@ -1,5 +1,5 @@
 > **Learning Log** - SQL's Order of Execution 
-> **Date:** YYYY-MM-DD   
+> **Date:** 2026-02-004   
 > **Source / Exercise:** SQLBolt
 > **Goal of today's study:** Brief example of the logical order of execution and syntax structure of SQL query coding practices.
 
