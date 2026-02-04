@@ -5,8 +5,8 @@
 
 # Quick Reference
 - [What's an Expression?](#what-an-expression-is)
-- [Simple Expression Examples](#simplest-expressions)
--[Literal Values](#literal-values)
+- [Simple Expression Examples](#simplest-expressions)  
+- [Literal Values](#literal-values)
 - [Arithmetic Expressions](#arithmetic-expressions)
 - [String expressions](#string-expressions)
 - [Comparison expressions](#comparison-expressions)
