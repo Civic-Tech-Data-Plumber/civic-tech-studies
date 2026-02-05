@@ -25,6 +25,7 @@ Anything you `DROP` is **gone permanently**, so it’s used for removing databas
 
 * ✅ Tables, databases, views, indexes, procedures, functions, triggers
 * ❌ Not used for data inside rows or for altering table columns (different commands for that)
+* 💡 Civic-Tech Tip: When experimenting with real-world civic data, always work in a copy or sandbox database. DROP will permanently delete datasets, which could include sensitive public records.
 
 ---
 
@@ -98,7 +99,3 @@ DROP TRIGGER trigger_name;
 ```
 
 * Removes a **trigger** (an automated action tied to a table event, e.g., INSERT, UPDATE, DELETE).
-
----
-
-💡 Civic-Tech Tip: When experimenting with real-world civic data, always work in a copy or sandbox database. DROP will permanently delete datasets, which could include sensitive public records.
