@@ -19,16 +19,19 @@
 
 ---
 
+
+
 ## Expressions
 
 Expressions transform or calculate values in your queries.
 
-| Type               | Example                                               | Description                       |     |   |                         |                          |
-| ------------------ | ----------------------------------------------------- | --------------------------------- | --- | - | ----------------------- | ------------------------ |
-| Arithmetic         | `rating * 10 AS rating_percent`                       | Multiply rating by 10             |     |   |                         |                          |
-| Concatenation      | `first_name                                           |                                   | ' ' |   | last_name AS full_name` | Combine columns into one |
-| Modulo             | `year % 2 = 0`                                        | Filter rows where year is even    |     |   |                         |                          |
-| Conditional (CASE) | `CASE WHEN score > 90 THEN 'A' ELSE 'B' END AS grade` | Conditional output based on rules |     |   |                         |                          |
+
+| Type               | Example                                               | Description        |
+| ------------------ | ----------------------------------------------------- | ------------- |
+| Arithmetic         | `rating * 10 AS rating_percent`                       | Multiply rating by 10   |
+| Concatenation      | `name, ", ", state, ", ", judge, ", ", verdict` | Combine columns into one |
+| Modulo             | `year % 2 = 0`                                        | Filter rows where year is even |
+| Conditional (CASE) | `CASE WHEN score > 90 THEN 'A' ELSE 'B' END AS grade` | Conditional output based on rules |
 
 > **Tip:** Always alias your expressions (`AS`) for readable output.
 
