@@ -1,6 +1,6 @@
-> **Learning Log** - Show & Create Databases 
-> **Date:** 2026-02-05   
-> **Source / Exercise:** "SQL In Easy Steps" by Mike McGrath
+> **Learning Log** - Show & Create Databases   
+> **Date:** 2026-02-05     
+> **Source / Exercise:** "SQL In Easy Steps" by Mike McGrath  
 > **Summary:**  An introduction to viewing and creating databases
 
 # Quick Reference
