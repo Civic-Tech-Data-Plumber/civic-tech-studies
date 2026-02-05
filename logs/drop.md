@@ -4,9 +4,9 @@
 > **Summary:**  Deleting elements with the `DROP` keyword
 
 # Quick Reference
-- [Drop Keyword](#drop-keyword "Quick overview of the DROP keyword")
-- [Drop Tables](#tables "Permanently remove tables")
-- [Drop Databases](#databases "Permanently remove entire databases")
+- [Drop Keyword](#drop-keyword "Quick overview of the DROP keyword.")
+- [Drop Tables](#tables "Permanently remove tables.")
+- [Drop Databases](#databases "Permanently remove entire databases.")
 - [Drop Views](#views "Permanently remove views previously created.")
 - [Drop Indexes](#indexes "Permanently remove indexes.")
 - [Drop Stored Procedures / Functions](#stored-procedures--functions "Permanently remove procedures or functions created.")
