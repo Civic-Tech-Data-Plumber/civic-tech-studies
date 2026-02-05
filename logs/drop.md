@@ -4,13 +4,13 @@
 > **Summary:**  Deleting elements with the `DROP` keyword
 
 # Quick Reference
-- [Drop Keyword](#drop-keyword)
-- [Drop Tables](#tables)
-- [Drop Databases](#databases)
-- [Drop Views](#views)
-- [Drop Indexes](#indexes)
-- [Drop Stored Procedures / Functions](#stored-procedures--functions)
-- [Drop Triggers](#triggers)
+- [Drop Keyword](#drop-keyword "Quick overview of the DROP keyword")
+- [Drop Tables](#tables "Permanently remove tables")
+- [Drop Databases](#databases "Permanently remove entire databases")
+- [Drop Views](#views "Permanently remove views previously created.")
+- [Drop Indexes](#indexes "Permanently remove indexes.")
+- [Drop Stored Procedures / Functions](#stored-procedures--functions "Permanently remove procedures or functions created.")
+- [Drop Triggers](#triggers "Permanently remove triggers.")
 
 ---
 
@@ -64,6 +64,7 @@ DROP VIEW view_name;
 ## Indexes
 
 ```sql
+DROP INDEX index_name;  -- SQLite/PostgreSQL
 DROP INDEX index_name ON table_name;  -- MySQL
 ```
 
@@ -81,6 +82,13 @@ DROP FUNCTION function_name;
 
 * Removes a **procedure** or **function** from the database.
 
+For Stored Procedures / Functions, you might add that some systems require `IF EXISTS` for safety:
+
+```sql
+DROP PROCEDURE IF EXISTS procedure_name;
+DROP FUNCTION IF EXISTS function_name;
+```
+
 ---
 
 ## Triggers
@@ -90,3 +98,7 @@ DROP TRIGGER trigger_name;
 ```
 
 * Removes a **trigger** (an automated action tied to a table event, e.g., INSERT, UPDATE, DELETE).
+
+---
+
+💡 Civic-Tech Tip: When experimenting with real-world civic data, always work in a copy or sandbox database. DROP will permanently delete datasets, which could include sensitive public records.
