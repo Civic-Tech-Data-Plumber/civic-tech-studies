@@ -1,20 +1,19 @@
 > **Learning Log** - [Topic / Concept Name]  
 > **Date:** YYYY-MM-DD   
 > **Source / Exercise:** [SQLBolt / other textbook / online tutorial]  
-> **Goal of today's study:**  
-> [Briefly summarize why you’re learning this concept, what questions it helps answer, or what problems it solves in civic-tech / data analysis context.]
+> **Goal of today's study:**  [Briefly summarize why you’re learning this concept, what questions it helps answer, or what problems it solves in civic-tech / data analysis context.]
 
 # Quick Reference
-- [WHERE Clause](#where-clause)
-- [AND / OR](#and--or)
-- [LIKE / NOT LIKE](#like--not-like)
-- [GROUP BY & HAVING](#group-by--having)
-- [ORDER BY / ASC / DESC](#order-by--asc--desc)
-- [Expressions & Modulo](#expressions--modulo)
+- [WHERE Clause](#where-clause "Link description")
+- [AND / OR](#and--or "Link description")
+- [LIKE / NOT LIKE](#like--not-like "Link description")
+- [GROUP BY & HAVING](#group-by--having "Link description")
+- [ORDER BY / ASC / DESC](#order-by--asc--desc "Link description")
+- [Expressions & Modulo](#expressions--modulo "Link description")
 
 ---
 
-## 1️⃣ Concept 1 {#concept-1}
+## Concept 1 
 > [Concept Name, e.g., `WHERE` Clause]
 
 **Goal:**  
@@ -59,7 +58,7 @@ Additional info for Concept 1
 
 ---
 
-## 2️⃣ Concept 2 {#concept-2}
+## Concept 2 
 
 Quick sentence, table, or code
 
@@ -74,7 +73,7 @@ Quick sentence, table, or code
 
 ---
 
-## 💡 Pro Tip!
+## Pro Tip
 
 Quick sentence, table, or code
 
@@ -86,5 +85,3 @@ Quick sentence, table, or code
 | Item 4             | example 4   | description 4   |
 
 > Tip: ⚠️ notes, or input for the reader
-
-1️⃣ 2️⃣ 3️⃣ 4️⃣ 5️⃣ 6️⃣ 7️⃣ 8️⃣ 9️⃣ 🔟
