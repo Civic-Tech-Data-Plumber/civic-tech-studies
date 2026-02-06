@@ -21,7 +21,11 @@ This is an early-stage project. Most content currently consists of:
 - SQL learning exercises
 - Exploratory research and design thinking
 
-Expect rough edges and frequent iteration.
+Expect rough edges and frequent iteration. 
+
+> Polished versions of my work will be in the logs folder.  
+> Rough drafts will be in the archives folder.  
+> A glossary and index will be updated shortly. Check back frequently to view updates.
 
 ## Values and Constraints
 
