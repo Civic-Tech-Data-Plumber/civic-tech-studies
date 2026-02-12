@@ -62,6 +62,9 @@ WHERE cases.date = '2025-09-02 10:35:00'
 
 ORDER BY court.judge_id ASC;
 ```
+
+> **Personal review:** Good, but could use an upgrade. 
+
 ---
 
 ## 2
@@ -186,7 +189,9 @@ CREATE TABLE opinion_joins (
         ON DELETE CASCADE
 ) ENGINE=InnoDB;
 ```
+
 ---
+> Notes on cascading logic based on tables created a above.
 
 ### Applying logic 
 **Why `ON DELETE` we use `RESTRICT`, `CASCADE`, and/or `SET NULL`**
@@ -200,7 +205,31 @@ CREATE TABLE opinion_joins (
 | judges → opinions (author) | SET NULL             | Opinion survives judge deletion              |
 | sources → clusters         | RESTRICT or SET NULL | Depends on whether you allow source deletion |
 
-### How to Think About It Systematically
+####Mental Model: Strong vs Weak Entities
+
+You can think of this like:
+
+**Strong (root) entities:**
+
+- courts
+- judges
+- sources
+
+**Mid-level structural entities:**
+
+- dockets
+- clusters
+
+**Weak / dependent entities:**
+
+- opinions
+- opinion_joins
+
+> Weak entities should usually cascade.  
+> Attribution-type relationships should usually set null.  
+> Foundational institutions should restrict.  
+
+#### How to Think About It Systematically
 
 Ask three questions:
 
@@ -213,6 +242,30 @@ Ask three questions:
 3. Is the parent foundational and rarely deleted?
 → Use RESTRICT.
 
+### If You Delete Things…
+
+Let’s simulate mentally.
+
+If you delete:
+
+**A court:**
+→ Blocked (RESTRICT)
+
+**A docket:**
+→ Its clusters deleted
+→ Their opinions deleted
+→ Their opinion_joins deleted
+
+> Chain reaction.
+
+**A judge:**
+
+→ Their authored opinions remain
+→ author_id becomes NULL
+→ Their panel join entries deleted
+
+This preserves history without orphaning join rows.
+
 ---
 
 
@@ -220,16 +273,72 @@ Ask three questions:
 **Goal:** Create sample `SELECT` queries for the above tables  
 (assuming mock data has already been provided)
 
+#### 🧪 Random 1st query:
 ```sql
 SELECT
-      CONCAT_WS(' ', court.judge_fname, court.judge_lname) AS "Judge Name",
-      CONCAT_WS(' v ', cases.plaintiff, cases.defendant)   AS "Case Name",
-      cases.case_date                                      AS "Case Date"
-      
-FROM court
-JOIN cases ON cases.judge_id = court.judge_id
+    clusters.cluster_id,
+    clusters.case_name,
+    courts.court_name,
+    dockets.docket_number,
+    opinions.cite_count
+FROM clusters
+JOIN opinions 
+    ON opinions.cluster_id = clusters.cluster_id
+JOIN dockets 
+    ON clusters.docket_id = dockets.docket_id
+JOIN courts 
+    ON dockets.court_id = courts.court_id
+JOIN sources 
+    ON clusters.source_code = sources.source_code
+JOIN judges 
+    ON judges.court_id = courts.court_id
+WHERE opinions.cite_count > 3
+  AND clusters.source_code = 'C';
+```
 
-WHERE cases.date = '2025-09-02 10:35:00' 
+#### 🧪 Query 2 — Basic Join Fluency
+```sql
+SELECT
+  clusters.case_name,
+  dockets.docket_number,
+  courts.court_name
+FROM clusters
+JOIN dockets 
+    ON clusters.docket_id = dockets.docket_id
+JOIN courts 
+    ON dockets.court_id = courts.court_id
+WHERE courts.court_name = 'Ninth Circuit'
+ORDER BY dockets.docket_number ASC;
+```
 
-ORDER BY court.judge_id ASC;
+#### 🧪 Query 3 — Filtering + Aggregation
+```sql
+SELECT
+  courts.court_name,
+  COUNT(*)
+FROM
+  opinions
+WHERE opinions.cite_count > 5  -- note: need to join other tables
+GROUP BY court_name -- note: should have been courts.court_name, as above
+ORDER BY count DEC;  --note: should have used DESC
+```
+> Errors! didn't joined opinions to courts, use DESC
+> opinions → clusters → dockets → courts
+
+**Corrected:**
+
+```sql
+SELECT
+    courts.court_name,
+    COUNT(*) AS total_opinions
+FROM opinions
+JOIN clusters 
+    ON opinions.cluster_id = clusters.cluster_id
+JOIN dockets 
+    ON clusters.docket_id = dockets.docket_id
+JOIN courts 
+    ON dockets.court_id = courts.court_id
+WHERE opinions.cite_count > 5
+GROUP BY courts.court_name
+ORDER BY total_opinions DESC;
 ```
