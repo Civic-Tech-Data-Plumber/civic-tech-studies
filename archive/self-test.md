@@ -1,12 +1,6 @@
-> This page is the author just testing their coding skills by creating simple scripts.
+> This page is the author just testing their coding skills by creating simple scripts, creating notes, and showing the corrected code.
 
-## 1
-
-**Goals:**
-1. Create database
-2. Create tables and define parameters
-3. Populate tables with a mock dataset
-4. Perform a SELECT query
+## Create sample snippet
 
 ```sql
 
@@ -67,7 +61,7 @@ ORDER BY court.judge_id ASC;
 
 ---
 
-## 2
+## Schema design for tables
 
 **Goal:**
 Create schema for the tables utilizing realworld field terms from CourtListener.com
@@ -108,6 +102,7 @@ judges
    ├── opinions (author_id)
    └── opinion_joins (panel membership)
 ```
+
 ```
 sources
    └── clusters
@@ -190,8 +185,7 @@ CREATE TABLE opinion_joins (
 ) ENGINE=InnoDB;
 ```
 
----
-> Notes on cascading logic based on tables created a above.
+> **Notes on cascading logic based on tables created a above.**
 
 ### Applying logic 
 **Why `ON DELETE` we use `RESTRICT`, `CASCADE`, and/or `SET NULL`**
@@ -205,7 +199,7 @@ CREATE TABLE opinion_joins (
 | judges → opinions (author) | SET NULL             | Opinion survives judge deletion              |
 | sources → clusters         | RESTRICT or SET NULL | Depends on whether you allow source deletion |
 
-####Mental Model: Strong vs Weak Entities
+#### Mental Model: Strong vs Weak Entities
 
 You can think of this like:
 
@@ -235,16 +229,12 @@ Ask three questions:
 
 1. Is the child conceptually meaningless without the parent?
 → Use CASCADE.
-
 2. Is the relationship optional or historically preservable?
 → Use SET NULL.
-
 3. Is the parent foundational and rarely deleted?
 → Use RESTRICT.
 
 ### If You Delete Things…
-
-Let’s simulate mentally.
 
 If you delete:
 
@@ -255,7 +245,6 @@ If you delete:
 → Its clusters deleted
 → Their opinions deleted
 → Their opinion_joins deleted
-
 > Chain reaction.
 
 **A judge:**
@@ -263,17 +252,17 @@ If you delete:
 → Their authored opinions remain
 → author_id becomes NULL
 → Their panel join entries deleted
-
-This preserves history without orphaning join rows.
+> This preserves history without orphaning join rows.
 
 ---
 
-
-# 3
+# Testing `SELECT` queries
 **Goal:** Create sample `SELECT` queries for the above tables  
 (assuming mock data has already been provided)
 
-#### 🧪 Random 1st query:
+### 🧪 Example Query:
+What's wrong? 
+
 ```sql
 SELECT
     clusters.cluster_id,
@@ -295,8 +284,22 @@ JOIN judges
 WHERE opinions.cite_count > 3
   AND clusters.source_code = 'C';
 ```
+> The above example includes the judges table. But, was joining judges necessary for the intended output?  
+> If not, remove that `JOIN`
 
-#### 🧪 Query 2 — Basic Join Fluency
+---
+
+## SELF TESTS
+
+#### 🧪 Query 1 — Basic Join Fluency
+
+Return:
+- case_name
+- docket_number
+- court_name
+- For all clusters filed in the court named "Ninth Circuit".
+- Order by docket_number ascending.
+
 ```sql
 SELECT
   clusters.case_name,
@@ -311,7 +314,17 @@ WHERE courts.court_name = 'Ninth Circuit'
 ORDER BY dockets.docket_number ASC;
 ```
 
-#### 🧪 Query 3 — Filtering + Aggregation
+#### 🧪 Query 2 — Filtering + Aggregation
+
+Return:
+- court_name
+- COUNT of opinions
+- Only for opinions where cite_count > 5.
+- Group by court_name.
+- Order by count descending.
+
+> 1ST ATTEMPT:
+
 ```sql
 SELECT
   courts.court_name,
@@ -341,4 +354,170 @@ JOIN courts
 WHERE opinions.cite_count > 5
 GROUP BY courts.court_name
 ORDER BY total_opinions DESC;
+```
+
+---
+#### 🧪 Query 3 — Multi-Hop Join
+
+Return:
+- case_name
+- judge_name (author)
+- cite_count
+- For opinions authored by judges in the court named "Supreme Court".
+- Only include opinions with cite_count >= 10.
+- Order by cite_count descending.
+
+> 1st attempt
+
+```sql
+SELECT
+  case_name,
+  full_name AS judge_name,
+  cite_count
+FROM opinion_joins
+WHERE 
+   court_name = "Supreme Court" AND cite-count >= 10
+ORDER BY opinions.cite_count DESC;
+```
+
+> even though the FOREIGN KEYS utilized in the table creations enforce referential integrity, they do *not* auto-join tables during queries. SQL never follows queries unless you explicitly tell it to.
+
+What the prompt demands
+
+We need:
+
+- case_name → lives in clusters
+- judge_name (author) → lives in judges
+- cite_count → lives in opinions
+- Filter by court_name = 'Supreme Court' → lives in courts
+- Only authored opinions → so we use opinions.author_id
+- Only cite_count >= 10
+
+Where the snippit went wrong:
+❌ No JOINs (foreign keys don’t auto-join)
+❌ Referenced `court_name` without joining courts
+❌ `cite-count` should be `cite_count`
+❌ `FROM opinion_joins` is incorrect for author filtering
+❌ `ORDER BY opinions.cite_count` requires the `opinions` table in scope
+
+**Corrected:**
+
+SELECT
+  clusters.case_name,
+  judges.full_name AS judge_name,
+  opinions.cite_count
+FROM opinions
+JOIN clusters
+  ON opinions.cluster_id = clusters.cluster_id
+JOIN dockets
+  ON clusters.docket_id = dockets.docket_id
+JOIN courts
+  ON dockets.court_id = courts.court_id
+JOIN judges
+  ON opinions.author_id = judges.judge_id
+WHERE courts.court_name = 'Supreme Court'
+  AND opinions.cite_count >= 10
+ORDER BY opinions.cite_count DESC;
+
+#### 🧪 Query 4 — Source Filtering
+
+Return:
+
+- case_name
+- source_code
+- cite_count
+- For clusters where source_code = 'CRU'.
+- Only include opinions with cite_count > 3.
+- Order by cite_count descending.
+
+> 1st attempt
+
+```sql
+SELECT
+  clusters.case_name,
+  sources.source_code,
+  opinions.cite_count
+FROM opinions
+  JOIN clusters
+    ON opinions.cluster_id = clusters.cluster_id
+  JOIN sources
+    ON clusters.source_code = sources.source_code
+WHERE clusters.source_code = "CRU"
+  AND opinions.cite_count > 3
+ ORDER BY opinions.cite_count DESC; 
+ ```
+
+ > Joining sources was not needed as source code is already included in the clusters table
+
+ **Tip: ou only need a JOIN if:**
+- You are selecting columns from that table
+- Or filtering using columns not already accessible
+ 
+ **Corrected:**
+ 
+```sql
+ SELECT
+  clusters.case_name,
+  clusters.source_code,
+  opinions.cite_count
+FROM opinions
+JOIN clusters
+  ON opinions.cluster_id = clusters.cluster_id
+WHERE clusters.source_code = 'CRU'
+  AND opinions.cite_count > 3
+ORDER BY opinions.cite_count DESC;
+```
+
+---
+
+#### 🧪 Query 5 — Join Table Reasoning
+
+Return:
+
+- case_name
+- judge_name
+- For judges who were on the panel (not necessarily author).
+- Use the opinion_joins table.
+- Only include clusters from the court named "Second Circuit".
+- Order alphabetically by judge_name.
+
+> 1st attempt
+
+```sql 
+SELECT
+  clusters.case_name,
+  judges.full_name AS judge_name
+FROM opinion_joins
+JOIN judges
+  ON opinion_joins.judge_id = judges.judge_id
+JOIN opinions
+  ON opinions.author_id = judges.judge_id
+JOIN clusters
+  ON opinions.cluster_id = clusters.cluster_id
+WHERE courts.court_name = "Second Circuit"
+  OR courts.court_name LIKE "2nd Circuit"
+ORDER BY judge_name;
+```
+
+> errors: Joined opinions incorrectly, referenced courts but never joined, added LIKE is unnessary.
+
+**Corrected:**
+
+```sql
+SELECT
+  clusters.case_name,
+  judges.full_name AS judge_name
+FROM opinion_joins
+JOIN judges
+  ON opinion_joins.judge_id = judges.judge_id
+JOIN opinions
+  ON opinion_joins.opinion_id = opinions.opinion_id
+JOIN clusters
+  ON opinions.cluster_id = clusters.cluster_id
+JOIN dockets
+  ON clusters.docket_id = dockets.docket_id
+JOIN courts
+  ON dockets.court_id = courts.court_id
+WHERE courts.court_name = 'Second Circuit'
+ORDER BY judge_name ASC;
 ```
